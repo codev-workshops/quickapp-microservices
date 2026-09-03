@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - identity-service
+      - customer-service
+      - order-service
+      - product-service
+      - notification-service
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  identity-service:
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=identitydb;Username=postgres;Password=postgres
+
+  customer-service:
+    build:
+      context: .
+      dockerfile: Services/Customer/Customer.API/Dockerfile
+    ports:
+      - "5002:5002"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=customerdb;Username=postgres;Password=postgres
+
+  order-service:
+    build:
+      context: .
+      dockerfile: Services/Order/Order.API/Dockerfile
+    ports:
+      - "5003:5003"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=orderdb;Username=postgres;Password=postgres
+
+  product-service:
+    build:
+      context: .
+      dockerfile: Services/Product/Product.API/Dockerfile
+    ports:
+      - "5004:5004"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=productdb;Username=postgres;Password=postgres
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Services/Notification/Notification.API/Dockerfile
+    ports:
+      - "5005:5005"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=notificationdb;Username=postgres;Password=postgres
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  postgres_data:

@@ -1,0 +1,37 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.log
+*.cache
+*.pidb
+*.pdb
+
+## NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+## IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+
+## Docker
+docker-compose.override.local.yml
+
+## Environment
+.env
+.env.local
+appsettings.*.local.json
