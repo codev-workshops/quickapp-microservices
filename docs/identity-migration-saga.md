@@ -8,7 +8,7 @@ losing data.
 ```
                  ┌──────────── API gateway (YARP) ────────────┐
    clients ────► │ /connect/token, /api/account/**             │
-                 │   identity-strangler-cluster.active ────────┼──► monolith :5225   (before cutover)
+                 │   identity-strangler-cluster.active ────────┼──► monolith :7085 (HTTPS; the monolith 301/307s plain HTTP)
                  │                                     └───────┼──► identity-service :5001 (after cutover)
                  └────────────────────────────────────────────┘
    monolith SQL Server ── Debezium (forward CDC) ──► Kafka ──► JDBC sink ──► identitydb (Postgres)
@@ -83,6 +83,10 @@ is reached.
 - [ ] Gateway config contains exactly one route each for `/connect/token` and `/api/account/{**catch-all}`
       (`identity-token-route`, `identity-account-route`). The pre-existing `identity-route`
       (`/api/identity/**` → `identity-cluster`) is unrelated and was left untouched.
+- [ ] `MonolithAddress` is the monolith's **HTTPS** endpoint. The monolith calls `UseHttpsRedirection()` and has
+      no forwarded-headers handling, so proxying to its HTTP port returns `307 https://<monolith>/...` to
+      clients, bypassing the gateway. `appsettings.Development.json` accepts the monolith dev cert only in
+      Development; in real environments the gateway must trust the monolith's TLS cert.
 - [ ] `ReverseSync:Enabled=true` on Identity.API and `IdentityOutbox` is empty.
 - [ ] Forward connectors `RUNNING` (`curl :8083/connectors/identitydb-sink/status`).
 

@@ -16,7 +16,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       # Strangler routing for the Identity domain. Cutover = point this at identity-service; rollback = back to the monolith.
-      - ReverseProxy__Clusters__identity-strangler-cluster__Destinations__active__Address=${IDENTITY_STRANGLER_DESTINATION:-http://host.docker.internal:5225/}
+      - ReverseProxy__Clusters__identity-strangler-cluster__Destinations__active__Address=${IDENTITY_STRANGLER_DESTINATION:-https://host.docker.internal:7085/}
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
