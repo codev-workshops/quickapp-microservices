@@ -3,15 +3,24 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>identity-api-quickapp</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
-    <ProjectReference Include="..\Identity.Infrastructure\Identity.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    <ProjectReference Include="../Identity.Domain/Identity.Domain.csproj" />
+    <ProjectReference Include="../Identity.Infrastructure/Identity.Infrastructure.csproj" />
+    <ProjectReference Include="../../../Shared/Shared.Contracts/Shared.Contracts.csproj" />
+    <ProjectReference Include="../../../Shared/Shared.Infrastructure/Shared.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.*" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.*" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenIddict.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.*" />
   </ItemGroup>
 </Project>
