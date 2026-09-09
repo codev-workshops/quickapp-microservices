@@ -99,8 +99,8 @@ public class Backfill(IConfiguration configuration)
     public static object ConvertValue(object value) => value switch
     {
         DBNull => DBNull.Value,
-        DateTime dt => DateTime.SpecifyKind(dt, DateTimeKind.Utc),
-        DateTimeOffset dto => dto.ToUniversalTime(),
+        DateTime dt => Microseconds.Round(DateTime.SpecifyKind(dt, DateTimeKind.Utc)),
+        DateTimeOffset dto => Microseconds.Round(dto.ToUniversalTime()),
         _ => value
     };
 

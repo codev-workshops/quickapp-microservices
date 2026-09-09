@@ -12,7 +12,17 @@ register() {
   echo "Registering connector $name"
   jq .config "$file" | curl -fsS -X PUT -H 'Content-Type: application/json' \
     --data @- "$CONNECT_URL/connectors/$name/config" >/dev/null
-  curl -fsS "$CONNECT_URL/connectors/$name/status" | jq -c '{name, state: .connector.state, tasks: [.tasks[].state]}'
+  # A freshly created connector 404s on /status until the worker has processed the config topic.
+  local status i
+  for i in $(seq 1 30); do
+    if status="$(curl -fsS "$CONNECT_URL/connectors/$name/status" 2>/dev/null)"; then
+      jq -c '{name, state: .connector.state, tasks: [.tasks[].state]}' <<<"$status"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Connector $name did not report a status within 30s" >&2
+  return 1
 }
 
 [[ "$what" == source || "$what" == all ]] && register "$DIR/connectors/monolith-identity-source.json"
