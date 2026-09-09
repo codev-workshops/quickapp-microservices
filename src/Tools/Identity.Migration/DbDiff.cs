@@ -46,7 +46,12 @@ public class DbDiff(IConfiguration configuration)
 
             foreach (var k in missing.Take(5)) Console.WriteLine($"    missing in identitydb: {k}");
             foreach (var k in extra.Take(5)) Console.WriteLine($"    only in identitydb:    {k}");
-            foreach (var k in changed.Take(5)) Console.WriteLine($"    content differs:       {k}");
+            foreach (var k in changed.Take(5))
+            {
+                var cols = commonColumns.Where(c => left.Rows[k][c] != right.Rows[k][c])
+                    .Select(c => $"{c} ({Trunc(left.Rows[k][c])} | {Trunc(right.Rows[k][c])})");
+                Console.WriteLine($"    content differs:       {k}: {string.Join(", ", cols)}");
+            }
         }
 
         Console.WriteLine(differences == 0 ? "Databases are in sync." : $"{differences} row differences found.");
@@ -74,12 +79,20 @@ public class DbDiff(IConfiguration configuration)
         }
     }
 
-    /// <summary>Canonical textual form so SQL Server and Postgres values compare equal.</summary>
+    private static DateTime TruncateToMicroseconds(DateTime value) =>
+        new(value.Ticks - value.Ticks % 10, value.Kind);
+
+    private static string Trunc(string value) => value.Length <= 40 ? value : value[..37] + "...";
+
+    /// <summary>
+    /// Canonical textual form so SQL Server and Postgres values compare equal. Timestamps are truncated to
+    /// microseconds: SQL Server datetime2 keeps 100ns ticks, Postgres only microseconds.
+    /// </summary>
     private static string Normalize(object value) => value switch
     {
         DBNull => "<null>",
-        DateTime dt => DateTime.SpecifyKind(dt, DateTimeKind.Utc).ToString("O", CultureInfo.InvariantCulture),
-        DateTimeOffset dto => dto.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+        DateTime dt => TruncateToMicroseconds(DateTime.SpecifyKind(dt, DateTimeKind.Utc)).ToString("O", CultureInfo.InvariantCulture),
+        DateTimeOffset dto => TruncateToMicroseconds(dto.UtcDateTime).ToString("O", CultureInfo.InvariantCulture),
         bool b => b ? "1" : "0",
         _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty
     };

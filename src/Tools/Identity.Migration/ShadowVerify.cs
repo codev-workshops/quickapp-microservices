@@ -33,7 +33,10 @@ public class ShadowVerify(IConfiguration configuration)
             return 1;
         }
 
-        using var http = new HttpClient();
+        using var handler = new HttpClientHandler();
+        if (configuration.GetValue("Verify:AllowUntrustedTls", false))
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+        using var http = new HttpClient(handler);
         var failures = 0;
 
         foreach (var (userName, password) in accounts)

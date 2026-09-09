@@ -87,8 +87,10 @@ builder.Services.AddOpenIddict()
                    .AddDevelopmentSigningCertificate();
         }
 
+        // TLS is terminated at the API gateway; service-to-service traffic inside the compose network is plain HTTP.
         options.UseAspNetCore()
-               .EnableTokenEndpointPassthrough();
+               .EnableTokenEndpointPassthrough()
+               .DisableTransportSecurityRequirement();
     })
     .AddValidation(options =>
     {

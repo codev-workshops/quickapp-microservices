@@ -1,0 +1,25 @@
+{
+  "name": "monolith-identity-source",
+  "config": {
+    "connector.class": "io.debezium.connector.sqlserver.SqlServerConnector",
+    "tasks.max": "1",
+    "database.hostname": "${env:MONOLITH_DB_HOST}",
+    "database.port": "${env:MONOLITH_DB_PORT}",
+    "database.user": "${env:MONOLITH_DB_USER}",
+    "database.password": "${env:MONOLITH_DB_PASSWORD}",
+    "database.names": "QuickApp",
+    "database.encrypt": "false",
+    "topic.prefix": "monolith",
+    "table.include.list": "dbo.AspNetRoles,dbo.AspNetUsers,dbo.AspNetRoleClaims,dbo.AspNetUserClaims,dbo.AspNetUserLogins,dbo.AspNetUserRoles,dbo.AspNetUserTokens,dbo.OpenIddictApplications,dbo.OpenIddictScopes,dbo.OpenIddictAuthorizations,dbo.OpenIddictTokens",
+    "snapshot.mode": "no_data",
+    "tombstones.on.delete": "false",
+    "decimal.handling.mode": "string",
+    "time.precision.mode": "connect",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
+    "schema.history.internal.kafka.topic": "schema-changes.monolith-identity",
+    "topic.creation.default.replication.factor": "1",
+    "topic.creation.default.partitions": "1",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}

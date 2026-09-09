@@ -21,7 +21,7 @@ public class OutboxDrain(IConfiguration configuration)
         var monolith = configuration.GetConnectionString("Monolith") ?? throw new InvalidOperationException("ConnectionStrings:Monolith missing");
 
         var services = new ServiceCollection();
-        services.AddLogging(b => b.AddConsole());
+        services.AddLogging(b => b.AddConsole().SetMinimumLevel(LogLevel.Warning));
         services.AddSingleton<IUserIdAccessor, SystemUserIdAccessor>();
         services.AddDbContext<IdentityDbContext>(o => o.UseNpgsql(identity).UseOpenIddict());
         services.AddOptions<ReverseSyncOptions>().Configure(o =>

@@ -1,0 +1,19 @@
+{
+  "name": "identitydb-sink",
+  "config": {
+    "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "topics.regex": "monolith\\.QuickApp\\.dbo\\..*",
+    "connection.url": "jdbc:postgresql://${env:IDENTITY_DB_HOST}:${env:IDENTITY_DB_PORT}/identitydb",
+    "connection.username": "${env:IDENTITY_DB_USER}",
+    "connection.password": "${env:IDENTITY_DB_PASSWORD}",
+    "insert.mode": "upsert",
+    "delete.enabled": "true",
+    "primary.key.mode": "record_key",
+    "schema.evolution": "none",
+    "quote.identifiers": "true",
+    "table.name.format": "${source.table}",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}

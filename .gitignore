@@ -35,3 +35,7 @@ docker-compose.override.local.yml
 .env
 .env.local
 appsettings.*.local.json
+
+# OpenIddict certificates are mounted at runtime, never committed
+*.pfx
+*.p12
