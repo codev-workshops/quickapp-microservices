@@ -7,8 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Product.Domain\Product.Domain.csproj" />
     <ProjectReference Include="..\Product.Infrastructure\Product.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Contracts\Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.*" />
