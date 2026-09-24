@@ -14,7 +14,7 @@ public class NotificationRenderer
     /// Formats a monetary amount (major currency units, e.g. dollars, as carried
     /// by <c>OrderPlacedEvent.TotalAmount</c>) for display in notification emails.
     /// </summary>
-    private static string FormatCurrency(decimal amount)
+    internal static string FormatCurrency(decimal amount)
     {
         return amount.ToString("C2", CultureInfo.GetCultureInfo("en-US"));
     }
