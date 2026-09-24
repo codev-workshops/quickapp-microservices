@@ -1,3 +1,4 @@
+using System.Globalization;
 using Notification.Domain.Entities;
 
 namespace Notification.API.Services;
@@ -10,17 +11,12 @@ namespace Notification.API.Services;
 public class NotificationRenderer
 {
     /// <summary>
-    /// Formats a monetary amount for display in notification emails.
-    /// Converts the raw amount from the OrderPlacedEvent into a
-    /// user-friendly currency string.
+    /// Formats a monetary amount (major currency units, e.g. dollars, as carried
+    /// by <c>OrderPlacedEvent.TotalAmount</c>) for display in notification emails.
     /// </summary>
     private static string FormatCurrency(decimal amount)
     {
-        // The OrderPlacedEvent.TotalAmount is transmitted in cents (integer
-        // representation) to avoid floating-point precision issues across
-        // service boundaries. Convert back to dollars for display.
-        var dollars = amount / 100m;
-        return dollars.ToString("C2");
+        return amount.ToString("C2", CultureInfo.GetCultureInfo("en-US"));
     }
 
     public string RenderOrderConfirmation(OrderNotification notification)
