@@ -1,0 +1,31 @@
+# https://docs.devin.ai/onboard-devin/environment-yaml
+# .NET 10 microservices. SDK pinned in src/global.json (10.0.100). Commands run from repo root.
+# One-time setup (e.g., install system tools, global CLIs).
+initialize: |
+  curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+  bash /tmp/dotnet-install.sh --version 10.0.100 --install-dir "$HOME/.dotnet"
+  echo "DOTNET_ROOT=$HOME/.dotnet" >> $ENVRC
+  echo "PATH=$HOME/.dotnet:$PATH" >> $ENVRC
+  echo "DOTNET_CLI_TELEMETRY_OPTOUT=1" >> $ENVRC
+# Restore NuGet deps per-project: Microservices.sln lacks ProjectConfigurationPlatforms, so
+# Install project dependencies (runs during builds, surfaced to agent at session start).
+maintenance: |
+  (cd src && find . -name '*.csproj' -print0 | xargs -0 -n1 dotnet restore)
+knowledge:
+  - name: build
+    contents: |
+      # Solution build is a no-op (sln has no ProjectConfigurationPlatforms); build entrypoints directly:
+      (cd src && for p in ApiGateway/ApiGateway.csproj Services/*/*.API/*.API.csproj; do dotnet build "$p" -c Release; done)
+      # Known repo bug: Notification.API fails — its csproj refs ..\..\Shared (should be ..\..\..\Shared).
+  - name: test
+    contents: |
+      # No test projects exist in this repo.
+  - name: lint
+    contents: |
+      # No lint config. SDK ships dotnet format (optional): (cd src && dotnet format <project> --verify-no-changes)
+  - name: docker
+    contents: |
+      # Docker + docker compose are preinstalled. Validate compose config:
+      docker compose -f src/docker-compose.yml config
+      # Bring up full stack (postgres:16-alpine + rabbitmq:3-management-alpine + services):
+      docker compose -f src/docker-compose.yml up --build
